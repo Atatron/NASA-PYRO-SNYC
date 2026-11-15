@@ -5,9 +5,9 @@ A local web application for exploring historical NASA FIRMS active-fire detectio
 > Independent hackathon prototype using NASA FIRMS data and, where enabled, NASA GIBS imagery. Not an official NASA application.
 
 **This repository (NASA-PYRO-SNYC)** carries PyroSync with the **UI 1.7 interface** (zinc light/dark theme, five workspaces,
-a YouTube-style map stage with theater and full screen, one control per job, browser and CDN caching with a loading bar;
-frontend only, see [docs/CHANGES_UI_1.7.md](docs/CHANGES_UI_1.7.md) and [docs/CHANGES_UI_1.6.md](docs/CHANGES_UI_1.6.md)).
-It is a snapshot of `Atatron/nasapyrosync` branch `feature/ui-1.7`; the full development history (1.0–1.5) stays in that repository.
+a YouTube-style map stage with theater and full screen, one control per job, browser and CDN caching with a loading bar,
+and all 38 Indonesian provinces in the area list; no backend code changes, see [docs/CHANGES_UI_1.7.md](docs/CHANGES_UI_1.7.md) and [docs/CHANGES_UI_1.6.md](docs/CHANGES_UI_1.6.md)).
+It is a snapshot of `Atatron/nasapyrosync` branch `feature/provinces-38`; the full development history (1.0–1.5) stays in that repository.
 
 - **Full raw archive** ([`indonesia_full_history.1.1.zip`](https://github.com/Atatron/NASA-PYRO-SNYC/releases/download/v1.6.0/indonesia_full_history.1.1.zip), 194 MB, 3,895 FIRMS CSV files, 2000–2026): too large for a normal Git file, so it is
   attached to the GitHub Release [v1.6.0](https://github.com/Atatron/NASA-PYRO-SNYC/releases/tag/v1.6.0). Import it in the local
