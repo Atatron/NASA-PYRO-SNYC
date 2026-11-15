@@ -25,6 +25,7 @@ from . import insights as INS
 from . import live as LIVE
 from . import query as Q
 from .config import APP_VERSION, PROCESSING_VERSION, PROJECT_ROOT, get_settings
+from . import db
 from .db import get_revision
 
 app = FastAPI(title="PyroSync API", version=APP_VERSION,
@@ -63,6 +64,13 @@ async def _server_err(request: Request, e: Exception):
     frames = traceback.extract_tb(e.__traceback__)[-4:]
     where = " <- ".join(f"{fr.filename.rsplit('/', 2)[-1]}:{fr.lineno} {fr.name}" for fr in reversed(frames))
     logging.getLogger("pyrosync").error(_redact(f"pyrosync 500 ref={ref} {request.url.path} {type(e).__name__}: {str(e)[:400]} at {where}"))
+    if db.is_fatal(e):
+        # The shared DuckDB connection is unusable from here on. Reset it so only this request fails, not every later one.
+        disk_full = "No space left on device" in str(e)
+        db.recover_after_fatal(reseed=disk_full and get_settings().readonly)
+        cache.invalidate()
+        return JSONResponse(status_code=503, headers={"Retry-After": "5"},
+                            content={"detail": f"The server ran out of working space and has been reset (reference {ref}). Please retry in a few seconds.", "ref": ref})
     return JSONResponse(status_code=500, content={"detail": f"Internal error (reference {ref}). The server log has the details.", "ref": ref})
 
 

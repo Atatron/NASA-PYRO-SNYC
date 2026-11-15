@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import logging
 import os
+import shutil
 import threading
 from contextlib import contextmanager
 
@@ -110,6 +111,38 @@ def close_conn() -> None:
             _conn.close()
         _conn = None
         _conn_path = None
+
+
+# After one of these, DuckDB refuses every later query on the connection ("database has been invalidated"),
+# so a single failed request would otherwise break the whole instance until it is recycled.
+_FATAL_MARKERS = ("database has been invalidated", "No space left on device")
+
+
+def is_fatal(error: BaseException) -> bool:
+    """True when the shared connection can no longer be used: a DuckDB fatal error or a full disk."""
+    return isinstance(error, duckdb.FatalException) or any(marker in str(error) for marker in _FATAL_MARKERS)
+
+
+def recover_after_fatal(reseed: bool = False) -> None:
+    """Drop the shared connection and its spill files so the next request reopens the database cleanly.
+
+    `reseed=True` also deletes the database file. Use it only where that file is a disposable copy
+    (the read-only demo, which downloads or copies it again): a full /tmp cannot be freed any other way,
+    because the cached area-membership rows are written into the same file."""
+    global _conn, _conn_path
+    with _lock:
+        path = _conn_path or str(get_settings().db_path)
+        if _conn is not None:
+            try:
+                _conn.close()
+            except duckdb.Error as e:
+                logging.getLogger(__name__).warning("pyrosync: closing the invalidated connection failed (%s)", type(e).__name__)
+        _conn = None
+        _conn_path = None
+        shutil.rmtree(Path(path).parent / "duckdb_tmp", ignore_errors=True)
+        if reseed:
+            for suffix in ("", ".wal"):
+                Path(path + suffix).unlink(missing_ok=True)
 
 
 @contextmanager
