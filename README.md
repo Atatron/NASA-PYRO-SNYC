@@ -8,9 +8,9 @@ A local web application for exploring historical NASA FIRMS active-fire detectio
 compact controls, phone layout; frontend only, see [docs/CHANGES_UI_1.6.md](docs/CHANGES_UI_1.6.md)). It is a snapshot of
 `Atatron/nasapyrosync` branch `feature/ui-refactor`; the full development history (1.0–1.5) stays in that repository.
 
-- **Full raw archive** (`indonesia_full_history.zip`, 194 MB, 3,895 FIRMS CSV files, 2000–2026): too large for a normal Git file, so it is
+- **Full raw archive** ([`indonesia_full_history.1.1.zip`](https://github.com/Atatron/NASA-PYRO-SNYC/releases/download/v1.6.0/indonesia_full_history.1.1.zip), 194 MB, 3,895 FIRMS CSV files, 2000–2026): too large for a normal Git file, so it is
   attached to the GitHub Release [v1.6.0](https://github.com/Atatron/NASA-PYRO-SNYC/releases/tag/v1.6.0). Import it in the local
-  app under *Methods → Import data*, or run `python -m pyrosync.cli import indonesia_full_history.zip` (ZIP files are read directly).
+  app under *Methods → Import data*, or run `python -m pyrosync.cli import indonesia_full_history.1.1.zip` (ZIP files are read directly).
 - **Project proposal:** [docs/proposal/PyroSync_Proposal_Clean_Formatted.docx](docs/proposal/PyroSync_Proposal_Clean_Formatted.docx).
 
 Everything runs on your own computer at **http://127.0.0.1:8000**. Nothing is published to the internet. The only outside requests are optional ones: NASA GIBS satellite-imagery tiles and the Esri basemap, which your browser fetches when you pick them, and the FIRMS API, which runs only if you add a key.
